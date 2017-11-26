@@ -588,12 +588,15 @@ but is called after each death and level change in deathmatch
 void InitClientPersistant (gclient_t *client)
 {
 	gitem_t		*item;
+	gitem_t		*ammo;
 
 	memset (&client->pers, 0, sizeof(client->pers));
 
 	item = FindItem("Blaster");
+	//ammo = FindItem("Rockets");
 	client->pers.selected_item = ITEM_INDEX(item);
 	client->pers.inventory[client->pers.selected_item] = 1;
+	//client->ammo_index = ITEM_INDEX(FindItem(client->pers.weapon->ammo));
 
 	client->pers.weapon = item;
 
@@ -608,6 +611,13 @@ void InitClientPersistant (gclient_t *client)
 	client->pers.max_slugs		= 50;
 
 	client->pers.connected = true;
+
+	/*int index = ITEM_INDEX(ammo);
+
+	client->pers.inventory[index] += 50;
+
+	if (client->pers.inventory[index] > client->pers.max_rockets = 50)
+		client->pers.inventory[index] = client->pers.max_rockets = 50;*/
 }
 
 
