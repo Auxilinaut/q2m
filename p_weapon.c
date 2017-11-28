@@ -116,10 +116,10 @@ qboolean Pickup_Weapon (edict_t *ent, edict_t *other)
 	{
 		// give them some ammo with it
 		ammo = FindItem (ent->item->ammo);
-		if ( (int)dmflags->value & DF_INFINITE_AMMO )
+		//if ( (int)dmflags->value & DF_INFINITE_AMMO )
 			Add_Ammo (other, ammo, 1000);
-		else
-			Add_Ammo (other, ammo, ammo->quantity);
+		/*else
+			Add_Ammo (other, ammo, ammo->quantity);*/
 
 		if (! (ent->spawnflags & DROPPED_PLAYER_ITEM) )
 		{
