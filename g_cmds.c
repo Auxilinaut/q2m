@@ -884,18 +884,40 @@ void Cmd_PlayerClass_f(edict_t *ent)
 {
 	int			index;
 	gitem_t		*it;
+	gitem_t		*wep;
+	gitem_t		*ammo;
 	char		*s;
 
 	s = gi.args();
-	gi.cprintf(ent, PRINT_HIGH, "Chosen Class: %s\n", s);
+	ent->playerClass = s;
+	gi.cprintf(ent, PRINT_HIGH, "Chosen Class: %s\n", ent->playerClass);
 
 
-	if (Q_stricmp(s, "Pharah") == 0)
+	if (Q_stricmp(ent->playerClass, "Pharah") == 0)
+	{
+		wep = FindItem("Rocket Launcher");
+	}
+	else if (Q_stricmp(ent->playerClass, "Tracer") == 0)
+	{
+
+	}
+	else if (Q_stricmp(ent->playerClass, "Soldier76") == 0)
+	{
+		wep = FindItem("HyperBlaster");
+	}
+	else if (Q_stricmp(ent->playerClass, "Mccree") == 0)
 	{
 
 	}
 
+	ent->client->pers.selected_item = ITEM_INDEX(wep);
+	ent->client->pers.inventory[ent->client->pers.selected_item] = 1;
 
+	ent->client->pers.weapon = wep;
+	ent->client->newweapon = wep;
+
+	ammo = FindItem(wep->ammo);
+	Add_Ammo(ent, ammo, 1000);
 
 	/*it = FindItem(s);
 	if (!it)
