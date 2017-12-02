@@ -1097,5 +1097,8 @@ struct edict_s
 
 	//mods
 	char *playerClass;
+	qboolean attacking;
+	void(*ability)(edict_t *self);
+	void(*ultimate)(edict_t *self);
 };
 

@@ -896,28 +896,53 @@ void Cmd_PlayerClass_f(edict_t *ent)
 	if (Q_stricmp(ent->playerClass, "Pharah") == 0)
 	{
 		wep = FindItem("Rocket Launcher");
+		ent->client->pers.selected_item = ITEM_INDEX(wep);
+		ent->client->pers.inventory[ent->client->pers.selected_item] = 1;
+
+		ent->client->pers.weapon = wep;
+		ent->client->newweapon = wep;
+
+		ammo = FindItem(wep->ammo);
+		Add_Ammo(ent, ammo, 1000);
 	}
 	else if (Q_stricmp(ent->playerClass, "Tracer") == 0)
 	{
+		wep = FindItem("Machinegun");
+		ent->client->pers.selected_item = ITEM_INDEX(wep);
+		ent->client->pers.inventory[ent->client->pers.selected_item] = 1;
 
+		ent->client->pers.weapon = wep;
+		ent->client->newweapon = wep;
+
+		ammo = FindItem(wep->ammo);
+		Add_Ammo(ent, ammo, 1000);
 	}
 	else if (Q_stricmp(ent->playerClass, "Soldier76") == 0)
 	{
 		wep = FindItem("HyperBlaster");
+		ent->client->pers.selected_item = ITEM_INDEX(wep);
+		ent->client->pers.inventory[ent->client->pers.selected_item] = 1;
+
+		ent->client->pers.weapon = wep;
+		ent->client->newweapon = wep;
+
+		ammo = FindItem(wep->ammo);
+		Add_Ammo(ent, ammo, 1000);
 	}
 	else if (Q_stricmp(ent->playerClass, "Mccree") == 0)
 	{
+		wep = FindItem("blaster");
+		ent->client->pers.selected_item = ITEM_INDEX(wep);
+		//ent->client->pers.inventory[ent->client->pers.selected_item] = 1;
 
+		ent->client->pers.weapon = wep;
+		ent->client->newweapon = wep;
+
+		/*ammo = FindItem(wep->ammo);
+		Add_Ammo(ent, ammo, 1000);*/
 	}
 
-	ent->client->pers.selected_item = ITEM_INDEX(wep);
-	ent->client->pers.inventory[ent->client->pers.selected_item] = 1;
-
-	ent->client->pers.weapon = wep;
-	ent->client->newweapon = wep;
-
-	ammo = FindItem(wep->ammo);
-	Add_Ammo(ent, ammo, 1000);
+	
 
 	/*it = FindItem(s);
 	if (!it)
@@ -1030,6 +1055,10 @@ void ClientCommand (edict_t *ent)
 		Cmd_PlayerList_f(ent);
 	else if (Q_stricmp(cmd, "class") == 0)
 		Cmd_PlayerClass_f(ent);
+	else if (Q_stricmp(cmd, "ability") == 0)
+		gi.centerprintf(ent, "used ability");
+	else if (Q_stricmp(cmd, "ultimate") == 0)
+		gi.centerprintf(ent, "used ultimate");
 	else	// anything that doesn't match a command will be a chat
 		Cmd_Say_f (ent, false, true);
 }
