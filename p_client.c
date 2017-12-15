@@ -1247,6 +1247,8 @@ void PutClientInServer (edict_t *ent)
 	// force the current weapon up
 	client->newweapon = client->pers.weapon;
 	ChangeWeapon (ent);
+
+	gi.centerprintf(ent, "CHOOSE YOUR HERO\n Press the corresponding key:\n(1) Pharah (2) Tracer\n(3) Soldier76 (4) Mccree\n", 10000);
 }
 
 /*
