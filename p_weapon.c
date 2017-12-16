@@ -101,6 +101,8 @@ qboolean Pickup_Weapon (edict_t *ent, edict_t *other)
 	int			index;
 	gitem_t		*ammo;
 
+	return false;
+
 	index = ITEM_INDEX(ent->item);
 
 	if ( ( ((int)(dmflags->value) & DF_WEAPONS_STAY) || coop->value) 
@@ -830,9 +832,9 @@ void Weapon_Blaster_Fire (edict_t *ent)
 	int		damage;
 
 	if (deathmatch->value)
-		damage = 15;
+		damage = 25;
 	else
-		damage = 10;
+		damage = 20;
 	Blaster_Fire (ent, vec3_origin, damage, false, EF_BLASTER);
 	ent->client->ps.gunframe++;
 }
@@ -1413,3 +1415,144 @@ void Weapon_BFG (edict_t *ent)
 
 
 //======================================================================
+
+
+/*
+======================================================================
+
+KICKBACKER
+
+======================================================================
+*/
+
+
+void kb_touch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
+{
+	vec3_t		origin;
+	int			n;
+
+	if (other == ent->owner)
+		return;
+
+	if (surf && (surf->flags & SURF_SKY))
+	{
+		G_FreeEdict(ent);
+		return;
+	}
+
+	if (ent->owner->client)
+		PlayerNoise(ent->owner, ent->s.origin, PNOISE_IMPACT);
+
+	// calculate position for the explosion entity
+	VectorMA(ent->s.origin, -0.02, ent->velocity, origin);
+
+	if (other->takedamage)
+	{
+		T_Damage(other, ent, ent->owner, ent->velocity, ent->s.origin, plane->normal, 0, 100, 0, MOD_ROCKET);
+	}
+	else
+	{
+		// don't throw any debris in net games
+		if (!deathmatch->value && !coop->value)
+		{
+			if ((surf) && !(surf->flags & (SURF_WARP | SURF_TRANS33 | SURF_TRANS66 | SURF_FLOWING)))
+			{
+				n = rand() % 5;
+				while (n--)
+					ThrowDebris(ent, "models/objects/debris2/tris.md2", 2, ent->s.origin);
+			}
+		}
+	}
+
+	T_RadiusDamage(ent, ent->owner, 0, other, 0, MOD_R_SPLASH);
+
+	gi.WriteByte(svc_temp_entity);
+	if (ent->waterlevel)
+		gi.WriteByte(TE_ROCKET_EXPLOSION_WATER);
+	else
+		gi.WriteByte(TE_ROCKET_EXPLOSION);
+	gi.WritePosition(origin);
+	gi.multicast(ent->s.origin, MULTICAST_PHS);
+
+	G_FreeEdict(ent);
+}
+
+void fire_kb(edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage)
+{
+	edict_t	*kb;
+
+	kb = G_Spawn();
+	VectorCopy(start, kb->s.origin);
+	VectorCopy(dir, kb->movedir);
+	vectoangles(dir, kb->s.angles);
+	VectorScale(dir, speed, kb->velocity);
+	kb->movetype = MOVETYPE_FLYMISSILE;
+	kb->clipmask = MASK_SHOT;
+	kb->solid = SOLID_BBOX;
+	kb->s.effects |= EF_ROCKET;
+	VectorClear(kb->mins);
+	VectorClear(kb->maxs);
+	kb->s.modelindex = gi.modelindex("models/objects/rocket/tris.md2");
+	kb->owner = self;
+	kb->touch = kb_touch;
+	kb->nextthink = level.time + 8000 / speed;
+	kb->think = G_FreeEdict;
+	kb->dmg = damage;
+	kb->radius_dmg = radius_damage;
+	kb->dmg_radius = damage_radius;
+	kb->s.sound = gi.soundindex("weapons/rockfly.wav");
+	kb->classname = "rocket";
+
+	/*if (self->client)
+	check_dodge(self, kb->s.origin, dir, speed);*/
+
+	gi.linkentity(kb);
+}
+
+void Weapon_KickBacker_Fire(edict_t *ent)
+{
+	vec3_t	offset, start;
+	vec3_t	forward, right;
+	int		damage;
+	float	damage_radius;
+	int		radius_damage;
+
+	damage = 0;//100 + (int)(random() * 20.0);
+	radius_damage = 0;
+	damage_radius = 0;
+	/*if (is_quad)
+	{
+	damage *= 4;
+	radius_damage *= 4;
+	}*/
+
+	AngleVectors(ent->client->v_angle, forward, right, NULL);
+
+	VectorScale(forward, -2, ent->client->kick_origin);
+	ent->client->kick_angles[0] = -1;
+
+	VectorSet(offset, 8, 8, ent->viewheight - 8);
+	P_ProjectSource(ent->client, ent->s.origin, offset, forward, right, start);
+	fire_kb(ent, start, forward, damage, 1000, damage_radius, radius_damage);
+
+	// send muzzle flash
+	gi.WriteByte(svc_muzzleflash);
+	gi.WriteShort(ent - g_edicts);
+	gi.WriteByte(MZ_ROCKET | is_silenced);
+	gi.multicast(ent->s.origin, MULTICAST_PVS);
+
+	ent->client->ps.gunframe++;
+
+	PlayerNoise(ent, start, PNOISE_WEAPON);
+
+	/*if (!((int)dmflags->value & DF_INFINITE_AMMO))
+	ent->client->pers.inventory[ent->client->ammo_index]--;*/
+}
+
+void Weapon_KickBacker(edict_t *ent)
+{
+	static int	pause_frames[] = { 25, 33, 42, 50, 0 };
+	static int	fire_frames[] = { 5, 0 };
+
+	Weapon_Generic(ent, 4, 12, 50, 54, pause_frames, fire_frames, Weapon_KickBacker_Fire);
+}

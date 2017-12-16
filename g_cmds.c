@@ -941,28 +941,6 @@ void Cmd_PlayerClass_f(edict_t *ent)
 		/*ammo = FindItem(wep->ammo);
 		Add_Ammo(ent, ammo, 1000);*/
 	}
-
-	
-
-	/*it = FindItem(s);
-	if (!it)
-	{
-		gi.cprintf(ent, PRINT_HIGH, "unknown item: %s\n", s);
-		return;
-	}
-	if (!it->use)
-	{
-		gi.cprintf(ent, PRINT_HIGH, "Item is not usable.\n");
-		return;
-	}
-	index = ITEM_INDEX(it);
-	if (!ent->client->pers.inventory[index])
-	{
-		gi.cprintf(ent, PRINT_HIGH, "Out of item: %s\n", s);
-		return;
-	}
-
-	it->use(ent, it);*/
 }
 
 
@@ -1061,4 +1039,56 @@ void ClientCommand (edict_t *ent)
 		gi.centerprintf(ent, "used ultimate");
 	else	// anything that doesn't match a command will be a chat
 		Cmd_Say_f (ent, false, true);
+}
+
+/*********************************************
+PHARAH
+**********************************************/
+
+void abilityPharah(edict_t *self)
+{
+
+}
+void ultimatePharah(edict_t *self)
+{
+
+}
+
+/*********************************************
+TRACER
+**********************************************/
+
+void abilityTracer(edict_t *self)
+{
+
+}
+void ultimateTracer(edict_t *self)
+{
+
+}
+
+/*********************************************
+SOLDIER76
+**********************************************/
+
+void abilitySoldier(edict_t *self)
+{
+
+}
+void ultimateSoldier(edict_t *self)
+{
+
+}
+
+/*********************************************
+MCCREE
+**********************************************/
+
+void abilityMccree(edict_t *self)
+{
+
+}
+void ultimateMccree(edict_t *self)
+{
+
 }
