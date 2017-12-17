@@ -1175,6 +1175,7 @@ void PutClientInServer (edict_t *ent)
 	// mods
 	ent->classSet = false;
 	ent->attacking = false;
+	ent->prevPosDelay = level.time + 10;
 
 	VectorCopy (mins, ent->mins);
 	VectorCopy (maxs, ent->maxs);
@@ -1214,6 +1215,9 @@ void PutClientInServer (edict_t *ent)
 	VectorCopy (spawn_origin, ent->s.origin);
 	ent->s.origin[2] += 1;	// make sure off ground
 	VectorCopy (ent->s.origin, ent->s.old_origin);
+
+	// mods
+	VectorCopy(ent->s.origin, ent->prevPos);
 
 	// set the delta angle
 	for (i=0 ; i<3 ; i++)
@@ -1659,6 +1663,13 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			ent->velocity[i] = pm.s.velocity[i]*0.125;
 		}
 
+		// mods
+		if (level.time > ent->prevPosDelay)
+		{
+			VectorCopy(ent->s.origin, ent->prevPos);
+			ent->prevPosDelay = level.time + 10;
+		}
+
 		VectorCopy (pm.mins, ent->mins);
 		VectorCopy (pm.maxs, ent->maxs);
 
@@ -1666,11 +1677,11 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		client->resp.cmd_angles[1] = SHORT2ANGLE(ucmd->angles[1]);
 		client->resp.cmd_angles[2] = SHORT2ANGLE(ucmd->angles[2]);
 
-		if (ent->groundentity && !pm.groundentity && (pm.cmd.upmove >= 10) && (pm.waterlevel == 0))
+		/*if (ent->groundentity && !pm.groundentity && (pm.cmd.upmove >= 10) && (pm.waterlevel == 0))
 		{
 			gi.sound(ent, CHAN_VOICE, gi.soundindex("*jump1.wav"), 1, ATTN_NORM, 0);
 			PlayerNoise(ent, ent->s.origin, PNOISE_SELF);
-		}
+		}*/
 
 		ent->viewheight = pm.viewheight;
 		ent->waterlevel = pm.waterlevel;

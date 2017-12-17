@@ -1117,7 +1117,12 @@ struct edict_s
 	qboolean classSet;
 
 	qboolean attacking;
+	float attackDelay;
 	edict_t *abilityTarget;
+
+	vec3_t prevPos;
+	float prevPosDelay;
+
 	void(*ability)(edict_t *self);
 	void(*ultimate)(edict_t *self);
 };

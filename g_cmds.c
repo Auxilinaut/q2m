@@ -1114,7 +1114,14 @@ TRACER
 
 void abilityTracer(edict_t *ent)
 {
+	// add a teleportation effect
+	ent->s.event = EV_PLAYER_TELEPORT;
 
+	// hold in place briefly
+	ent->client->ps.pmove.pm_flags = PMF_TIME_TELEPORT;
+	ent->client->ps.pmove.pm_time = 14;
+
+	VectorCopy(ent->prevPos, ent->s.origin);
 }
 void ultimateTracer(edict_t *ent)
 {
