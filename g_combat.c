@@ -403,8 +403,8 @@ void T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t dir,
 	if (!(dflags & DAMAGE_RADIUS) && (targ->svflags & SVF_MONSTER) && (attacker->client) && (!targ->enemy) && (targ->health > 0))
 		damage *= 2;
 
-	if (targ->flags & FL_NO_KNOCKBACK)
-		knockback = 0;
+	/*if (targ->flags & FL_NO_KNOCKBACK)
+		knockback = 0;*/
 
 // figure momentum add
 	if (!(dflags & DAMAGE_NO_KNOCKBACK))
@@ -487,7 +487,7 @@ void T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t dir,
 	if (targ->svflags & SVF_MONSTER)
 	{
 		M_ReactToDamage (targ, attacker);
-		if (!(targ->monsterinfo.aiflags & AI_DUCKED) && (take))
+		if (!(targ->monsterinfo.aiflags & AI_DUCKED) && (take || knockback))
 		{
 			targ->pain (targ, attacker, knockback, take);
 			// nightmare mode monsters don't go into pain frames often
@@ -497,10 +497,10 @@ void T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t dir,
 	}
 	else if (client)
 	{
-		if (!(targ->flags & FL_GODMODE) && (take))
+		if (!(targ->flags & FL_GODMODE) && (take || knockback))
 			targ->pain (targ, attacker, knockback, take);
 	}
-	else if (take)
+	else if (take || knockback)
 	{
 		if (targ->pain)
 			targ->pain (targ, attacker, knockback, take);

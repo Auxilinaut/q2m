@@ -16,6 +16,7 @@ void Weapon_Grenade (edict_t *ent);
 void Weapon_GrenadeLauncher (edict_t *ent);
 void Weapon_Railgun (edict_t *ent);
 void Weapon_BFG (edict_t *ent);
+void Weapon_KickBacker(edict_t *ent);
 
 gitem_armor_t jacketarmor_info	= { 25,  50, .30, .00, ARMOR_JACKET};
 gitem_armor_t combatarmor_info	= { 50, 100, .60, .30, ARMOR_COMBAT};
@@ -2090,6 +2091,29 @@ tank commander's head
 		NULL,
 		0,
 /* precache */ "items/s_health.wav items/n_health.wav items/l_health.wav items/m_health.wav"
+	},
+
+/*QUAKED weapon_kickbacker (.3 .3 1) (-16 -16 -16) (16 16 16)
+*/
+	{
+		"weapon_kickbacker",
+		Pickup_Weapon,
+		Use_Weapon,
+		Drop_Weapon,
+		Weapon_KickBacker,
+		"misc/w_pkup.wav",
+		"models/weapons/g_rocket/tris.md2", EF_ROTATE,
+		"models/weapons/v_rocket/tris.md2",
+		/* icon */		"w_rlauncher",
+		/* pickup */	"Kick Backer",//"Rocket Launcher",
+		0,
+		1,
+		"Rockets",
+		IT_WEAPON | IT_STAY_COOP,
+		WEAP_ROCKETLAUNCHER,
+		NULL,
+		0,
+		/* precache */ "models/objects/rocket/tris.md2 weapons/rockfly.wav weapons/rocklf1a.wav weapons/rocklr1b.wav models/objects/debris2/tris.md2"
 	},
 
 	// end of list marker

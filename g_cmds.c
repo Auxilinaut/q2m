@@ -882,65 +882,94 @@ void Cmd_PlayerList_f(edict_t *ent)
 
 void Cmd_PlayerClass_f(edict_t *ent)
 {
-	int			index;
-	gitem_t		*it;
+	/*int			index;
+	gitem_t		*it;*/
 	gitem_t		*wep;
 	gitem_t		*ammo;
 	char		*s;
-
-	s = gi.args();
-	ent->playerClass = s;
-	gi.cprintf(ent, PRINT_HIGH, "Chosen Class: %s\n", ent->playerClass);
-
-
-	if (Q_stricmp(ent->playerClass, "Pharah") == 0)
+	
+	if (ent->classSet != true)
 	{
-		wep = FindItem("Rocket Launcher");
-		ent->client->pers.selected_item = ITEM_INDEX(wep);
-		ent->client->pers.inventory[ent->client->pers.selected_item] = 1;
+		ent->classSet = true;
+		s = gi.args();
+		ent->playerClass = s;
+		gi.cprintf(ent, PRINT_HIGH, "Chosen Hero: %s\n", ent->playerClass);
 
-		ent->client->pers.weapon = wep;
-		ent->client->newweapon = wep;
 
-		ammo = FindItem(wep->ammo);
-		Add_Ammo(ent, ammo, 1000);
+		if (Q_stricmp(ent->playerClass, "Pharah") == 0)
+		{
+			ent->ability = &abilityPharah;
+			ent->ultimate = &ultimatePharah;
+
+			gi.cvar_set("sv_gravity", "100");
+			//ent->flags |= FL_FLY;
+
+			wep = FindItem("Rocket Launcher");
+			ent->client->pers.selected_item = ITEM_INDEX(wep);
+			ent->client->pers.inventory[ent->client->pers.selected_item] = 1;
+
+			ent->client->pers.weapon = wep;
+			ent->client->newweapon = wep;
+
+			ammo = FindItem(wep->ammo);
+			Add_Ammo(ent, ammo, 1000);
+		}
+		else if (Q_stricmp(ent->playerClass, "Tracer") == 0)
+		{
+			ent->ability = &abilityTracer;
+			ent->ultimate = &ultimateTracer;
+
+			wep = FindItem("Machinegun");
+			ent->client->pers.selected_item = ITEM_INDEX(wep);
+			ent->client->pers.inventory[ent->client->pers.selected_item] = 1;
+
+			ent->client->pers.weapon = wep;
+			ent->client->newweapon = wep;
+
+			ammo = FindItem(wep->ammo);
+			Add_Ammo(ent, ammo, 1000);
+		}
+		else if (Q_stricmp(ent->playerClass, "Soldier76") == 0)
+		{
+			ent->ability = &abilitySoldier;
+			ent->ultimate = &ultimateSoldier;
+
+			wep = FindItem("HyperBlaster");
+			ent->client->pers.selected_item = ITEM_INDEX(wep);
+			ent->client->pers.inventory[ent->client->pers.selected_item] = 1;
+
+			ent->client->pers.weapon = wep;
+			ent->client->newweapon = wep;
+
+			ammo = FindItem(wep->ammo);
+			Add_Ammo(ent, ammo, 1000);
+		}
+		else if (Q_stricmp(ent->playerClass, "Mccree") == 0)
+		{
+			ent->ability = &abilityMccree;
+			ent->ultimate = &ultimateMccree;
+
+			wep = FindItem("blaster");
+			ent->client->pers.selected_item = ITEM_INDEX(wep);
+			//ent->client->pers.inventory[ent->client->pers.selected_item] = 1;
+
+			ent->client->pers.weapon = wep;
+			ent->client->newweapon = wep;
+
+			/*ammo = FindItem(wep->ammo);
+			Add_Ammo(ent, ammo, 1000);*/
+		}
 	}
-	else if (Q_stricmp(ent->playerClass, "Tracer") == 0)
+	else
 	{
-		wep = FindItem("Machinegun");
-		ent->client->pers.selected_item = ITEM_INDEX(wep);
-		ent->client->pers.inventory[ent->client->pers.selected_item] = 1;
-
-		ent->client->pers.weapon = wep;
-		ent->client->newweapon = wep;
-
-		ammo = FindItem(wep->ammo);
-		Add_Ammo(ent, ammo, 1000);
+		gi.cprintf(ent, PRINT_HIGH, "You have already chosen a hero.\n");
 	}
-	else if (Q_stricmp(ent->playerClass, "Soldier76") == 0)
-	{
-		wep = FindItem("HyperBlaster");
-		ent->client->pers.selected_item = ITEM_INDEX(wep);
-		ent->client->pers.inventory[ent->client->pers.selected_item] = 1;
+}
 
-		ent->client->pers.weapon = wep;
-		ent->client->newweapon = wep;
-
-		ammo = FindItem(wep->ammo);
-		Add_Ammo(ent, ammo, 1000);
-	}
-	else if (Q_stricmp(ent->playerClass, "Mccree") == 0)
-	{
-		wep = FindItem("blaster");
-		ent->client->pers.selected_item = ITEM_INDEX(wep);
-		//ent->client->pers.inventory[ent->client->pers.selected_item] = 1;
-
-		ent->client->pers.weapon = wep;
-		ent->client->newweapon = wep;
-
-		/*ammo = FindItem(wep->ammo);
-		Add_Ammo(ent, ammo, 1000);*/
-	}
+void Cmd_PlayerAbility_f (edict_t *ent)
+{
+	if (ent->classSet == true)
+		ent->ability(ent);
 }
 
 
@@ -1034,7 +1063,7 @@ void ClientCommand (edict_t *ent)
 	else if (Q_stricmp(cmd, "class") == 0)
 		Cmd_PlayerClass_f(ent);
 	else if (Q_stricmp(cmd, "ability") == 0)
-		gi.centerprintf(ent, "used ability");
+		Cmd_PlayerAbility_f(ent);
 	else if (Q_stricmp(cmd, "ultimate") == 0)
 		gi.centerprintf(ent, "used ultimate");
 	else	// anything that doesn't match a command will be a chat
@@ -1045,11 +1074,36 @@ void ClientCommand (edict_t *ent)
 PHARAH
 **********************************************/
 
-void abilityPharah(edict_t *self)
+void abilityPharah(edict_t *ent)
 {
+	gitem_t		*wep;
+	gitem_t		*ammo;
 
+	wep = FindItem("Kick Backer");
+	ent->client->pers.selected_item = ITEM_INDEX(wep);
+	ent->client->pers.inventory[ent->client->pers.selected_item] = 1;
+
+	ent->client->pers.weapon = wep;
+	ent->client->newweapon = wep;
+
+	ammo = FindItem(wep->ammo);
+	Add_Ammo(ent, ammo, 1);
+	Weapon_KickBacker_Fire(ent);
+
+	wep = FindItem("Rocket Launcher");
+	ent->client->pers.selected_item = ITEM_INDEX(wep);
+	ent->client->pers.inventory[ent->client->pers.selected_item] = 1;
+
+	ent->client->pers.weapon = wep;
+	ent->client->newweapon = wep;
+
+	//ammo = FindItem(wep->ammo);
+
+	//Add_Ammo(ent, ammo, 1000);
+
+	//Drop_Item(ent, wep);
 }
-void ultimatePharah(edict_t *self)
+void ultimatePharah(edict_t *ent)
 {
 
 }
@@ -1058,11 +1112,11 @@ void ultimatePharah(edict_t *self)
 TRACER
 **********************************************/
 
-void abilityTracer(edict_t *self)
+void abilityTracer(edict_t *ent)
 {
 
 }
-void ultimateTracer(edict_t *self)
+void ultimateTracer(edict_t *ent)
 {
 
 }
@@ -1071,11 +1125,11 @@ void ultimateTracer(edict_t *self)
 SOLDIER76
 **********************************************/
 
-void abilitySoldier(edict_t *self)
+void abilitySoldier(edict_t *ent)
 {
 
 }
-void ultimateSoldier(edict_t *self)
+void ultimateSoldier(edict_t *ent)
 {
 
 }
@@ -1084,11 +1138,11 @@ void ultimateSoldier(edict_t *self)
 MCCREE
 **********************************************/
 
-void abilityMccree(edict_t *self)
+void abilityMccree(edict_t *ent)
 {
 
 }
-void ultimateMccree(edict_t *self)
+void ultimateMccree(edict_t *ent)
 {
 
 }

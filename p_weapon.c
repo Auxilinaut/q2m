@@ -1448,7 +1448,7 @@ void kb_touch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 
 	if (other->takedamage)
 	{
-		T_Damage(other, ent, ent->owner, ent->velocity, ent->s.origin, plane->normal, 0, 100, 0, MOD_ROCKET);
+		T_Damage(other, ent, ent->owner, ent->velocity, ent->s.origin, plane->normal, 0, 10000, 0, MOD_ROCKET);
 	}
 	else
 	{
@@ -1545,8 +1545,8 @@ void Weapon_KickBacker_Fire(edict_t *ent)
 
 	PlayerNoise(ent, start, PNOISE_WEAPON);
 
-	/*if (!((int)dmflags->value & DF_INFINITE_AMMO))
-	ent->client->pers.inventory[ent->client->ammo_index]--;*/
+	//if (!((int)dmflags->value & DF_INFINITE_AMMO))
+	ent->client->pers.inventory[ent->client->ammo_index]--;
 }
 
 void Weapon_KickBacker(edict_t *ent)

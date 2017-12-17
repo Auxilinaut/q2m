@@ -584,6 +584,7 @@ extern	gitem_t	itemlist[];
 void Cmd_Help_f (edict_t *ent);
 void Cmd_Score_f (edict_t *ent);
 void Cmd_PlayerClass_f (edict_t *ent);
+void Cmd_PlayerAbility_f (edict_t *ent);
 
 //
 // g_items.c
@@ -716,6 +717,7 @@ void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int 
 void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage);
 void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick);
 void fire_bfg (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius);
+void fire_kb(edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage);
 
 //
 // g_ptrail.c
@@ -796,6 +798,21 @@ void UpdateChaseCam(edict_t *ent);
 void ChaseNext(edict_t *ent);
 void ChasePrev(edict_t *ent);
 void GetChaseTarget(edict_t *ent);
+
+//
+// abilities and ultimates (mods)
+//
+void abilityPharah(edict_t *ent);
+void ultimatePharah(edict_t *ent);
+
+void abilityTracer(edict_t *ent);
+void ultimateTracer(edict_t *ent);
+
+void abilitySoldier(edict_t *ent);
+void ultimateSoldier(edict_t *ent);
+
+void abilityMccree(edict_t *ent);
+void ultimateMccree(edict_t *ent);
 
 //============================================================================
 

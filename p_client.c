@@ -1252,7 +1252,8 @@ void PutClientInServer (edict_t *ent)
 	client->newweapon = client->pers.weapon;
 	ChangeWeapon (ent);
 
-	gi.centerprintf(ent, "CHOOSE YOUR HERO\n Press the corresponding key:\n(1) Pharah (2) Tracer\n(3) Soldier76 (4) Mccree\n", 10000);
+	//gi.centerprintf(ent, "CHOOSE YOUR HERO\n Press the corresponding key:\n(1) Pharah (2) Tracer\n(3) Soldier76 (4) Mccree\n", 10000);
+	Cmd_Help_f(ent);
 }
 
 /*
@@ -1617,7 +1618,15 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		else
 			client->ps.pmove.pm_type = PM_NORMAL;
 
-		client->ps.pmove.gravity = sv_gravity->value;
+		/*if (ent->playerClass && Q_stricmp(ent->playerClass, "Pharah") == 0)
+		{
+			client->ps.pmove.gravity = 0.2f;
+		}
+		else
+		{*/
+			client->ps.pmove.gravity = sv_gravity->value;
+		//}
+
 		pm.s = client->ps.pmove;
 
 		for (i=0 ; i<3 ; i++)
@@ -1811,3 +1820,4 @@ void ClientBeginServerFrame (edict_t *ent)
 
 	client->latched_buttons = 0;
 }
+
