@@ -1113,7 +1113,7 @@ void ultimatePharah(edict_t *ent)
 {
 	if (!(ent->flags & FL_GODMODE))
 	{
-		gi.centerprintf(ent, "Justice rains from above");
+		gi.centerprintf(ent, "Justice rains from above!");
 		ent->flags ^= FL_GODMODE;
 		ent->godModeDelay = level.time + 10;
 	}
@@ -1133,7 +1133,29 @@ void abilityTracer(edict_t *ent)
 }
 void ultimateTracer(edict_t *ent)
 {
+	gi.centerprintf(ent, "Here you go!");
+	ent->client->grenade_time = level.time + 3.2;
+	weapon_grenade_fire(ent, false);
 
+	/*gitem_t		*wep;
+	gitem_t		*ammo;
+
+	wep = FindItem("Stunner");
+	ent->client->pers.selected_item = ITEM_INDEX(wep);
+	ent->client->pers.inventory[ent->client->pers.selected_item] = 1;
+
+	ent->client->pers.weapon = wep;
+	ent->client->newweapon = wep;
+
+	ammo = FindItem(wep->ammo);
+	Add_Ammo(ent, ammo, 1);
+	weapon_stunner_fire(ent);
+
+	wep = FindItem("blaster");
+	ent->client->pers.selected_item = ITEM_INDEX(wep);
+
+	ent->client->pers.weapon = wep;
+	ent->client->newweapon = wep;*/
 }
 
 /*********************************************
@@ -1153,7 +1175,7 @@ void ultimateSoldier(edict_t *ent)
 {
 	if (!(ent->flags & FL_GODMODE))
 	{
-		gi.centerprintf(ent, "Tactical Visor activated");
+		gi.centerprintf(ent, "Tactical Visor activated.");
 		ent->flags ^= FL_GODMODE;
 		ent->godModeDelay = level.time + 10;
 	}
@@ -1189,7 +1211,7 @@ void ultimateMccree(edict_t *ent)
 {
 	if (!(ent->flags & FL_GODMODE))
 	{
-		gi.centerprintf(ent, "It's High Noon");
+		gi.centerprintf(ent, "It's High Noon.");
 		ent->flags ^= FL_GODMODE;
 		ent->godModeDelay = level.time + 10;
 	}
