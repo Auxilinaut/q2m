@@ -6,6 +6,8 @@ To compile, open game.sln in Visual Studio 2015 or higher and build for Win32 re
 
 To play, copy /pharah/ to your Quake 2 directory. If said directory is located at C:\Program Files (x86)\Steam\steamapps\common\Quake 2, run the "q2m" shortcut. Otherwise, open the console and type "game pharah".
 
+Press E for each character's ability, and Q for their ultimate.
+
 Original author readme:
 This is the complete source code for Quake 2, version 3.19, buildable with
 visual C++ 6.0.  The linux version should be buildable, but we haven't
