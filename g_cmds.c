@@ -1114,10 +1114,7 @@ TRACER
 
 void abilityTracer(edict_t *ent)
 {
-	// add a teleportation effect
 	ent->s.event = EV_PLAYER_TELEPORT;
-
-	// hold in place briefly
 	ent->client->ps.pmove.pm_flags = PMF_TIME_TELEPORT;
 	ent->client->ps.pmove.pm_time = 14;
 
@@ -1134,11 +1131,20 @@ SOLDIER76
 
 void abilitySoldier(edict_t *ent)
 {
+	ent->s.event = EV_PLAYER_TELEPORT;
+	ent->client->ps.pmove.pm_flags = PMF_TIME_TELEPORT;
+	ent->client->ps.pmove.pm_time = 14;
 
+	ent->health += 30;
+	if (ent->health > ent->max_health) ent->health = ent->max_health;
 }
 void ultimateSoldier(edict_t *ent)
 {
-
+	if (!(ent->flags & FL_GODMODE))
+	{
+		ent->flags |= FL_GODMODE;
+		ent->godModeDelay = level.time + 300;
+	}
 }
 
 /*********************************************
