@@ -1,4 +1,12 @@
+Q2M: Pharah
 
+Overwatch mod for Quake 2 featuring Pharah, Tracer, Soldier 76, and Mccree.
+
+To compile, open game.sln in Visual Studio 2015 or higher and build for Win32 release.
+
+To play, copy /pharah/ to your Quake 2 directory. If said directory is located at C:\Program Files (x86)\Steam\steamapps\common\Quake 2, run the "q2m" shortcut. Otherwise, open the console and type "game pharah".
+
+Original author readme:
 This is the complete source code for Quake 2, version 3.19, buildable with
 visual C++ 6.0.  The linux version should be buildable, but we haven't
 tested it for the release.
