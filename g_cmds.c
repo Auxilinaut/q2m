@@ -972,6 +972,12 @@ void Cmd_PlayerAbility_f (edict_t *ent)
 		ent->ability(ent);
 }
 
+void Cmd_PlayerUltimate_f(edict_t *ent)
+{
+	if (ent->classSet == true)
+		ent->ultimate(ent);
+}
+
 
 /*
 =================
@@ -1065,7 +1071,7 @@ void ClientCommand (edict_t *ent)
 	else if (Q_stricmp(cmd, "ability") == 0)
 		Cmd_PlayerAbility_f(ent);
 	else if (Q_stricmp(cmd, "ultimate") == 0)
-		gi.centerprintf(ent, "used ultimate");
+		Cmd_PlayerUltimate_f(ent);
 	else	// anything that doesn't match a command will be a chat
 		Cmd_Say_f (ent, false, true);
 }
@@ -1105,7 +1111,12 @@ void abilityPharah(edict_t *ent)
 }
 void ultimatePharah(edict_t *ent)
 {
-
+	if (!(ent->flags & FL_GODMODE))
+	{
+		gi.centerprintf(ent, "Justice rains from above");
+		ent->flags ^= FL_GODMODE;
+		ent->godModeDelay = level.time + 10;
+	}
 }
 
 /*********************************************
@@ -1142,8 +1153,9 @@ void ultimateSoldier(edict_t *ent)
 {
 	if (!(ent->flags & FL_GODMODE))
 	{
-		ent->flags |= FL_GODMODE;
-		ent->godModeDelay = level.time + 300;
+		gi.centerprintf(ent, "Tactical Visor activated");
+		ent->flags ^= FL_GODMODE;
+		ent->godModeDelay = level.time + 10;
 	}
 }
 
@@ -1153,9 +1165,32 @@ MCCREE
 
 void abilityMccree(edict_t *ent)
 {
+	gitem_t		*wep;
+	gitem_t		*ammo;
 
+	wep = FindItem("Stunner");
+	ent->client->pers.selected_item = ITEM_INDEX(wep);
+	ent->client->pers.inventory[ent->client->pers.selected_item] = 1;
+
+	ent->client->pers.weapon = wep;
+	ent->client->newweapon = wep;
+
+	ammo = FindItem(wep->ammo);
+	Add_Ammo(ent, ammo, 1);
+	weapon_stunner_fire(ent);
+
+	wep = FindItem("blaster");
+	ent->client->pers.selected_item = ITEM_INDEX(wep);
+
+	ent->client->pers.weapon = wep;
+	ent->client->newweapon = wep;
 }
 void ultimateMccree(edict_t *ent)
 {
-
+	if (!(ent->flags & FL_GODMODE))
+	{
+		gi.centerprintf(ent, "It's High Noon");
+		ent->flags ^= FL_GODMODE;
+		ent->godModeDelay = level.time + 10;
+	}
 }

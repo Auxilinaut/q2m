@@ -1670,6 +1670,23 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			ent->prevPosDelay = level.time + 10;
 		}
 
+		if (ent->flags & FL_GODMODE)
+		{
+			if (Q_stricmp(ent->playerClass, "Pharah") == 0)
+			{
+				gi.cvar_set("sv_gravity", "0");
+			}
+
+			if (level.time > ent->godModeDelay)
+			{
+				ent->flags ^= FL_GODMODE;
+				if (Q_stricmp(ent->playerClass, "Pharah") == 0)
+				{
+					gi.cvar_set("sv_gravity", "100");
+				}
+			}
+		}
+
 		VectorCopy (pm.mins, ent->mins);
 		VectorCopy (pm.maxs, ent->maxs);
 

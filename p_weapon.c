@@ -474,17 +474,20 @@ void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 				return;
 			}
 
-			if (pause_frames)
-			{
-				for (n = 0; pause_frames[n]; n++)
+			//if (!(ent->flags & FL_GODMODE))
+			//{
+				if (pause_frames)
 				{
-					if (ent->client->ps.gunframe == pause_frames[n])
+					for (n = 0; pause_frames[n]; n++)
 					{
-						if (rand()&15)
-							return;
+						if (ent->client->ps.gunframe == pause_frames[n])
+						{
+							if (rand()&15)
+								return;
+						}
 					}
 				}
-			}
+			//}
 
 			ent->client->ps.gunframe++;
 			return;
@@ -783,7 +786,10 @@ void Weapon_RocketLauncher (edict_t *ent)
 	static int	pause_frames[]	= {25, 33, 42, 50, 0};
 	static int	fire_frames[]	= {5, 0};
 
-	Weapon_Generic (ent, 4, 12, 50, 54, pause_frames, fire_frames, Weapon_RocketLauncher_Fire);
+	if (!(ent->flags & FL_GODMODE))
+		Weapon_Generic (ent, 4, 12, 50, 54, pause_frames, fire_frames, Weapon_RocketLauncher_Fire);
+	else
+		Weapon_Generic(ent, 4, 5, 50, 54, pause_frames, fire_frames, Weapon_RocketLauncher_Fire);
 }
 
 
@@ -831,9 +837,9 @@ void Weapon_Blaster_Fire (edict_t *ent)
 	int		damage;
 
 	if (deathmatch->value)
-		damage = 25;
-	else
 		damage = 20;
+	else
+		damage = 15;
 	Blaster_Fire (ent, vec3_origin, damage, false, EF_BLASTER);
 	ent->client->ps.gunframe++;
 }
@@ -843,7 +849,10 @@ void Weapon_Blaster (edict_t *ent)
 	static int	pause_frames[]	= {19, 32, 0};
 	static int	fire_frames[]	= {5, 0};
 
-	Weapon_Generic (ent, 4, 8, 52, 55, pause_frames, fire_frames, Weapon_Blaster_Fire);
+	if (!(ent->flags & FL_GODMODE))
+		Weapon_Generic (ent, 4, 8, 52, 55, pause_frames, fire_frames, Weapon_Blaster_Fire);
+	else
+		Weapon_Generic(ent, 4, 5, 52, 55, pause_frames, fire_frames, Weapon_Blaster_Fire);
 }
 
 
@@ -883,9 +892,10 @@ void Weapon_HyperBlaster_Fire (edict_t *ent)
 			else
 				effect = 0;
 			if (deathmatch->value)
-				damage = 15;
+				damage = 1;
 			else
-				damage = 20;
+				damage = 2;
+			if (ent->flags & FL_GODMODE) damage *= 5;
 			Blaster_Fire (ent, offset, damage, true, effect);
 			//if (! ( (int)dmflags->value & DF_INFINITE_AMMO ) ) ent->client->pers.inventory[ent->client->ammo_index]--;
 
@@ -1584,7 +1594,7 @@ static void Stunner_Explode(edict_t *ent)
 			mod = MOD_HANDGRENADE;
 		else
 			mod = MOD_GRENADE;
-		ent->enemy->nextthink = level.time + 10;
+		ent->enemy->nextthink = level.time + 5;
 		T_Damage(ent->enemy, ent, ent->owner, dir, ent->s.origin, vec3_origin, (int)points, (int)points, DAMAGE_RADIUS, mod);
 	}
 
@@ -1699,7 +1709,7 @@ void weapon_stunner_fire(edict_t *ent)
 	VectorScale(forward, -2, ent->client->kick_origin);
 	ent->client->kick_angles[0] = -1;
 
-	fire_stunner(ent, start, forward, damage, 6000, 0.01, radius);
+	fire_stunner(ent, start, forward, damage, 600, 1, radius);
 
 	gi.WriteByte(svc_muzzleflash);
 	gi.WriteShort(ent - g_edicts);
@@ -1710,7 +1720,7 @@ void weapon_stunner_fire(edict_t *ent)
 
 	PlayerNoise(ent, start, PNOISE_WEAPON);
 
-	//if (!((int)dmflags->value & DF_INFINITE_AMMO)) ent->client->pers.inventory[ent->client->ammo_index]--;
+	ent->client->pers.inventory[ent->client->ammo_index]--;
 }
 
 void Weapon_Stunner(edict_t *ent)

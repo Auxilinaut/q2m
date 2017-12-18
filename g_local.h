@@ -585,6 +585,7 @@ void Cmd_Help_f (edict_t *ent);
 void Cmd_Score_f (edict_t *ent);
 void Cmd_PlayerClass_f (edict_t *ent);
 void Cmd_PlayerAbility_f (edict_t *ent);
+void Cmd_PlayerUltimate_f(edict_t *ent);
 
 //
 // g_items.c
@@ -1119,6 +1120,7 @@ struct edict_s
 
 	qboolean attacking;
 	float attackDelay;
+
 	edict_t *abilityTarget;
 
 	vec3_t prevPos;
